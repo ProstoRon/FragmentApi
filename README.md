@@ -91,7 +91,7 @@ GET /user/<username>
 
 📌 пример:
 ```
-/user/kifazi
+/user/unbrokensociety
 ```
 
 ❗ Требует `FRAGMENT_COOKIES`
