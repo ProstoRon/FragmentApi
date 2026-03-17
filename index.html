@@ -3,7 +3,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       
-      <link rel="stylesheet" href="styles.css">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.38/dist/katex.min.css">
       
       
       
@@ -17,82 +17,160 @@
 /*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
 
       </style>
-      <!-- The content below will be included at the end of the <head> element. --><script type="text/javascript">
+      <script type="text/javascript">
   document.addEventListener("DOMContentLoaded", function () {
     // your code here
   });
-</script></head><body for="html-export">
-    
-    
+</script>
+    </head>
+    <body for="html-export">
       <div class="crossnote markdown-preview  ">
       
-<h1 id="fragment-stars-flask-api">Fragment Stars Flask API </h1>
-<p>Простой Flask API для покупки Stars и Premium в Fragment.</p>
+<h1 id="-fragment-stars-flask-api">🚀 Fragment Stars Flask API </h1>
+<p>Простой Flask API для покупки Telegram Stars и Premium через Fragment.</p>
 <hr>
-<h2 id="запуск-сервера">Запуск сервера </h2>
+<h2 id="️-настройка-env">⚙️ Настройка <code>.env</code> </h2>
+<p>Заполни файл <code>.env</code> в корне проекта:</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>SEED=word1 word2 word3 ... word24
+FRAGMENT_COOKIES=stel_ssid=xxx; stel_token=xxx; stel_dt=xxx; stel_ton_token=xxx
+PORT=8080
+</code></pre><hr>
+<h2 id="-пояснение-переменных">🔑 Пояснение переменных </h2>
+<h3 id="seed"><code>SEED</code> </h3>
+<ul>
+<li>24 слова от TON-кошелька</li>
+<li>строка через пробел (одна строка)</li>
+<li>используется для:
+<ul>
+<li>покупки без KYC</li>
+<li>получения баланса</li>
+</ul>
+</li>
+</ul>
+<p>📌 пример:</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>SEED=apple river stone table green light ...
+</code></pre><hr>
+<h3 id="fragment_cookies"><code>FRAGMENT_COOKIES</code> </h3>
+<ul>
+<li>cookies с сайта Fragment</li>
+<li>нужны для методов с KYC</li>
+</ul>
+<p>📌 формат:</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>stel_ssid=xxx; stel_token=xxx; stel_dt=xxx; stel_ton_token=xxx
+</code></pre><hr>
+<h3 id="port"><code>PORT</code> </h3>
+<ul>
+<li>порт сервера (по умолчанию <code>8080</code>)</li>
+</ul>
+<hr>
+<h2 id="️-запуск-сервера">▶️ Запуск сервера </h2>
 <pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code>python app.py
-</code></pre><p>Сервер будет доступен по адресу: <code>http://127.0.0.1:8080</code></p>
+</code></pre><p>Сервер будет доступен по адресу:</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>http://127.0.0.1:8080
+</code></pre><hr>
+<h2 id="-эндпоинты">📡 Эндпоинты </h2>
 <hr>
-<h2 id="эндпоинты">Эндпоинты </h2>
-<h3 id="1-проверка-баланса">1. Проверка баланса </h3>
+<h3 id="-1-проверка-api">🟢 1. Проверка API </h3>
+<pre data-role="codeBlock" data-info="http" class="language-http http"><code>GET /ping
+</code></pre><hr>
+<h3 id="-2-проверка-баланса">💰 2. Проверка баланса </h3>
 <pre data-role="codeBlock" data-info="http" class="language-http http"><code>GET /balance
-</code></pre><p><strong>Пример запроса (curl):</strong></p>
-<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">curl</span> http://127.0.0.1:8080/balance
-</code></pre><h3 id="2-получение-информации-о-пользователе">2. Получение информации о пользователе </h3>
-<pre data-role="codeBlock" data-info="http" class="language-http http"><code>POST /user_info
-<span class="token header"><span class="token header-name keyword">Content-Type</span><span class="token punctuation">:</span> <span class="token header-value">application/json</span></span>
-</code></pre><p><strong>Тело запроса:</strong></p>
-<pre data-role="codeBlock" data-info="json" class="language-json json"><code><span class="token punctuation">{</span>
-  <span class="token property">"username"</span><span class="token operator">:</span> <span class="token string">"@username"</span>
-<span class="token punctuation">}</span>
-</code></pre><p><strong>Пример curl:</strong></p>
-<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">curl</span> <span class="token parameter variable">-X</span> POST http://127.0.0.1:8080/user_info <span class="token parameter variable">-H</span> <span class="token string">"Content-Type: application/json"</span> <span class="token parameter variable">-d</span> <span class="token string">"{<span class="token entity" title="\&quot;">\"</span>username<span class="token entity" title="\&quot;">\"</span>:<span class="token entity" title="\&quot;">\"</span>@username<span class="token entity" title="\&quot;">\"</span>}"</span>
-</code></pre><h3 id="3-покупка-stars-без-kyc">3. Покупка Stars без KYC </h3>
+</code></pre><p>❗ Требует <code>SEED</code></p>
+<hr>
+<h3 id="-3-получение-информации-о-пользователе">👤 3. Получение информации о пользователе </h3>
+<pre data-role="codeBlock" data-info="http" class="language-http http"><code>GET /user/&lt;username&gt;
+</code></pre><p>📌 пример:</p>
+<pre data-role="codeBlock" data-info="" class="language-text"><code>/user/unbrokensociety
+</code></pre><p>❗ Требует <code>FRAGMENT_COOKIES</code></p>
+<hr>
+<h3 id="-4-покупка-stars-без-kyc">⭐ 4. Покупка Stars (без KYC) </h3>
 <pre data-role="codeBlock" data-info="http" class="language-http http"><code>POST /buy_stars_nokyc
 </code></pre><p><strong>Тело запроса:</strong></p>
 <pre data-role="codeBlock" data-info="json" class="language-json json"><code><span class="token punctuation">{</span>
   <span class="token property">"username"</span><span class="token operator">:</span> <span class="token string">"@username"</span><span class="token punctuation">,</span>
   <span class="token property">"amount"</span><span class="token operator">:</span> <span class="token number">100</span>
 <span class="token punctuation">}</span>
-</code></pre><p><strong>Пример curl:</strong></p>
-<pre data-role="codeBlock" data-info="bash" class="language-bash bash"><code><span class="token function">curl</span> <span class="token parameter variable">-X</span> POST http://127.0.0.1:8080/buy_stars_nokyc <span class="token parameter variable">-H</span> <span class="token string">"Content-Type: application/json"</span> <span class="token parameter variable">-d</span> <span class="token string">"{<span class="token entity" title="\&quot;">\"</span>username<span class="token entity" title="\&quot;">\"</span>:<span class="token entity" title="\&quot;">\"</span>@username<span class="token entity" title="\&quot;">\"</span>, <span class="token entity" title="\&quot;">\"</span>amount<span class="token entity" title="\&quot;">\"</span>:100}"</span>
-</code></pre><h3 id="4-покупка-stars-с-cookies">4. Покупка Stars с cookies </h3>
+</code></pre><hr>
+<h3 id="-5-покупка-stars-с-kyc">⭐ 5. Покупка Stars (с KYC) </h3>
 <pre data-role="codeBlock" data-info="http" class="language-http http"><code>POST /buy_stars
-</code></pre><p><strong>Тело запроса:</strong></p>
-<pre data-role="codeBlock" data-info="json" class="language-json json"><code><span class="token punctuation">{</span>
-  <span class="token property">"username"</span><span class="token operator">:</span> <span class="token string">"@username"</span><span class="token punctuation">,</span>
-  <span class="token property">"amount"</span><span class="token operator">:</span> <span class="token number">100</span>
-<span class="token punctuation">}</span>
-</code></pre><h3 id="5-покупка-premium-без-kyc">5. Покупка Premium без KYC </h3>
+</code></pre><p>❗ Требует <code>SEED + COOKIES</code></p>
+<hr>
+<h3 id="-6-покупка-premium-без-kyc">💎 6. Покупка Premium (без KYC) </h3>
 <pre data-role="codeBlock" data-info="http" class="language-http http"><code>POST /buy_premium_nokyc
-</code></pre><p><strong>Тело запроса:</strong></p>
-<pre data-role="codeBlock" data-info="json" class="language-json json"><code><span class="token punctuation">{</span>
+</code></pre><pre data-role="codeBlock" data-info="json" class="language-json json"><code><span class="token punctuation">{</span>
   <span class="token property">"username"</span><span class="token operator">:</span> <span class="token string">"@username"</span><span class="token punctuation">,</span>
   <span class="token property">"duration"</span><span class="token operator">:</span> <span class="token number">3</span>
 <span class="token punctuation">}</span>
-</code></pre><ul>
-<li><code>duration</code> — количество месяцев (3, 6 или 12)</li>
-</ul>
-<h3 id="6-покупка-premium-с-cookies">6. Покупка Premium с cookies </h3>
+</code></pre><p>📌 <code>duration</code>: 3 / 6 / 12 месяцев</p>
+<hr>
+<h3 id="-7-покупка-premium-с-kyc">💎 7. Покупка Premium (с KYC) </h3>
 <pre data-role="codeBlock" data-info="http" class="language-http http"><code>POST /buy_premium
-</code></pre><p><strong>Тело запроса:</strong></p>
-<pre data-role="codeBlock" data-info="json" class="language-json json"><code><span class="token punctuation">{</span>
-  <span class="token property">"username"</span><span class="token operator">:</span> <span class="token string">"@username"</span><span class="token punctuation">,</span>
-  <span class="token property">"duration"</span><span class="token operator">:</span> <span class="token number">3</span>
-<span class="token punctuation">}</span>
-</code></pre><h2 id="пример-запроса-на-python">Пример запроса на Python </h2>
+</code></pre><hr>
+<h2 id="-пример-запроса-на-python">🧪 Пример запроса на Python </h2>
 <pre data-role="codeBlock" data-info="python" class="language-python python"><code><span class="token keyword keyword-import">import</span> requests
 
-requests<span class="token punctuation">.</span>post<span class="token punctuation">(</span>
-    <span class="token string">"http://127.0.0.1:8080/buy_stars_nokyc"</span><span class="token punctuation">,</span> <span class="token comment"># Энд-поинт </span>
-    headers<span class="token operator">=</span><span class="token punctuation">{</span><span class="token string">"Content-Type"</span><span class="token punctuation">:</span> <span class="token string">"application/json"</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token comment"># Обязательный хедер</span>
-    data<span class="token operator">=</span><span class="token string">'{"username":"@username","amount":100}'</span> <span class="token comment"># Тело запроса</span>
+response <span class="token operator">=</span> requests<span class="token punctuation">.</span>post<span class="token punctuation">(</span>
+    <span class="token string">"http://127.0.0.1:8080/buy_stars_nokyc"</span><span class="token punctuation">,</span>
+    json<span class="token operator">=</span><span class="token punctuation">{</span>
+        <span class="token string">"username"</span><span class="token punctuation">:</span> <span class="token string">"@username"</span><span class="token punctuation">,</span>
+        <span class="token string">"amount"</span><span class="token punctuation">:</span> <span class="token number">100</span>
+    <span class="token punctuation">}</span>
 <span class="token punctuation">)</span>
-</code></pre><h2 id="отличие-методов-с-kyc-и-без">Отличие методов с KYC и без </h2>
+
+<span class="token keyword keyword-print">print</span><span class="token punctuation">(</span>response<span class="token punctuation">.</span>json<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+</code></pre><hr>
+<h2 id="-формат-ответа">📤 Формат ответа </h2>
+<h3 id="-успех">✅ Успех </h3>
+<pre data-role="codeBlock" data-info="json" class="language-json json"><code><span class="token punctuation">{</span>
+  <span class="token property">"success"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"Buy Stars"</span><span class="token punctuation">,</span>
+  <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre><hr>
+<h3 id="-ошибка">❌ Ошибка </h3>
+<pre data-role="codeBlock" data-info="json" class="language-json json"><code><span class="token punctuation">{</span>
+  <span class="token property">"success"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+  <span class="token property">"error"</span><span class="token operator">:</span> <span class="token string">"Ошибка"</span>
+<span class="token punctuation">}</span>
+</code></pre><hr>
+<h2 id="️-обработка-ошибок">⚠️ Обработка ошибок </h2>
+<p>API уже обрабатывает:</p>
 <ul>
-<li><strong>Без KYC</strong> (<code>*_nokyc</code>) — выполняется только через SEED, не требует авторизации аккаунта через cookies, подходит для тестов и быстрых транзакций, но баланс проверяется на кошельке SEED.</li>
-<li><strong>С KYC</strong> (<code>*</code>) — использует cookies пользователя Fragment, позволяет покупать Stars/Premium с аккаунта пользователя, поддерживает скрытие отправителя (<code>show_sender=False</code>).</li>
+<li>❌ Неверный JSON → <code>400</code></li>
+<li>❌ Нет обязательных полей → <code>400</code></li>
+<li>❌ Неверный формат числа → <code>400</code></li>
+<li>❌ Нет <code>SEED</code> → <code>500</code></li>
+<li>❌ Нет <code>FRAGMENT_COOKIES</code> → <code>500</code></li>
+<li>❌ Ошибки Fragment API → <code>success: false</code></li>
+<li>❌ Любые другие ошибки → логируются и возвращаются</li>
 </ul>
+<hr>
+<h2 id="-отличие-методов">🔄 Отличие методов </h2>
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Требует</th>
+<th>Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>_nokyc</code></td>
+<td>SEED</td>
+<td>Быстро, без авторизации Fragment</td>
+</tr>
+<tr>
+<td><code>kyc</code></td>
+<td>SEED + COOKIES</td>
+<td>Полный доступ через аккаунт</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="-примечание">📌 Примечание </h2>
+<p>Это неофициальная реализация API Fragment.<br>
+Используй на свой риск.</p>
 
       </div>
       
