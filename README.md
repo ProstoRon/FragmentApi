@@ -1,52 +1,104 @@
-# Fragment Stars Flask API
+# 🚀 Fragment Stars Flask API
 
-Простой Flask API для покупки Stars и Premium в Fragment.
+Простой Flask API для покупки Telegram Stars и Premium через Fragment.
 
 ---
 
-## Запуск сервера
+## ⚙️ Настройка `.env`
+
+Создай файл `.env` в корне проекта:
+
+```
+SEED=word1 word2 word3 ... word24
+FRAGMENT_COOKIES=stel_ssid=xxx; stel_token=xxx; stel_dt=xxx; stel_ton_token=xxx
+PORT=8080
+```
+
+---
+
+## 🔑 Пояснение переменных
+
+### `SEED`
+- 24 слова от TON-кошелька
+- строка через пробел (одна строка)
+- используется для:
+  - покупки без KYC
+  - получения баланса
+
+📌 пример:
+```
+SEED=apple river stone table green light ...
+```
+
+---
+
+### `FRAGMENT_COOKIES`
+- cookies с сайта Fragment
+- нужны для методов с KYC
+
+📌 формат:
+```
+stel_ssid=xxx; stel_token=xxx; stel_dt=xxx; stel_ton_token=xxx
+```
+
+---
+
+### `PORT`
+- порт сервера (по умолчанию `8080`)
+
+---
+
+## ▶️ Запуск сервера
 
 ```bash
 python app.py
 ```
 
-Сервер будет доступен по адресу: `http://127.0.0.1:8080`
+Сервер будет доступен по адресу:  
+```
+http://127.0.0.1:8080
+```
 
 ---
 
-## Эндпоинты
+## 📡 Эндпоинты
 
-### 1. Проверка баланса
+---
+
+### 🟢 1. Проверка API
+
+```http
+GET /ping
+```
+
+---
+
+### 💰 2. Проверка баланса
 
 ```http
 GET /balance
 ```
 
-**Пример запроса (curl):**
-```bash
-curl http://127.0.0.1:8080/balance
-```
+❗ Требует `SEED`
 
-### 2. Получение информации о пользователе
+---
+
+### 👤 3. Получение информации о пользователе
 
 ```http
-POST /user_info
-Content-Type: application/json
+GET /user/<username>
 ```
 
-**Тело запроса:**
-```json
-{
-  "username": "@username"
-}
+📌 пример:
+```
+/user/kifazi
 ```
 
-**Пример curl:**
-```bash
-curl -X POST http://127.0.0.1:8080/user_info -H "Content-Type: application/json" -d "{\"username\":\"@username\"}"
-```
+❗ Требует `FRAGMENT_COOKIES`
 
-### 3. Покупка Stars без KYC
+---
+
+### ⭐ 4. Покупка Stars (без KYC)
 
 ```http
 POST /buy_stars_nokyc
@@ -60,32 +112,24 @@ POST /buy_stars_nokyc
 }
 ```
 
-**Пример curl:**
-```bash
-curl -X POST http://127.0.0.1:8080/buy_stars_nokyc -H "Content-Type: application/json" -d "{\"username\":\"@username\", \"amount\":100}"
-```
+---
 
-### 4. Покупка Stars с cookies
+### ⭐ 5. Покупка Stars (с KYC)
 
 ```http
 POST /buy_stars
 ```
 
-**Тело запроса:**
-```json
-{
-  "username": "@username",
-  "amount": 100
-}
-```
+❗ Требует `SEED + COOKIES`
 
-### 5. Покупка Premium без KYC
+---
+
+### 💎 6. Покупка Premium (без KYC)
 
 ```http
 POST /buy_premium_nokyc
 ```
 
-**Тело запроса:**
 ```json
 {
   "username": "@username",
@@ -93,34 +137,104 @@ POST /buy_premium_nokyc
 }
 ```
 
-- `duration` — количество месяцев (3, 6 или 12)
+📌 `duration`: 3 / 6 / 12 месяцев
 
-### 6. Покупка Premium с cookies
+---
+
+### 💎 7. Покупка Premium (с KYC)
 
 ```http
 POST /buy_premium
 ```
 
-**Тело запроса:**
-```json
-{
-  "username": "@username",
-  "duration": 3
-}
-```
+---
 
-## Пример запроса на Python
+## 🧪 Пример запроса на Python
 
 ```python
 import requests
 
-requests.post(
-    "http://127.0.0.1:8080/buy_stars_nokyc", # Энд-поинт 
-    headers={"Content-Type": "application/json"}, # Обязательный хедер
-    data='{"username":"@username","amount":100}' # Тело запроса
+response = requests.post(
+    "http://127.0.0.1:8080/buy_stars_nokyc",
+    json={
+        "username": "@username",
+        "amount": 100
+    }
 )
-```
-## Отличие методов с KYC и без
 
-- **Без KYC** (`*_nokyc`) — выполняется только через SEED, не требует авторизации аккаунта через cookies, подходит для тестов и быстрых транзакций, но баланс проверяется на кошельке SEED.  
-- **С KYC** (`*`) — использует cookies пользователя Fragment, позволяет покупать Stars/Premium с аккаунта пользователя, поддерживает скрытие отправителя (`show_sender=False`).
+print(response.json())
+```
+
+---
+
+## 📤 Формат ответа
+
+### ✅ Успех
+```json
+{
+  "success": true,
+  "description": "Buy Stars",
+  "data": {}
+}
+```
+
+---
+
+### ❌ Ошибка
+```json
+{
+  "success": false,
+  "error": "Ошибка"
+}
+```
+
+---
+
+## ⚠️ Обработка ошибок
+
+API уже обрабатывает:
+
+- ❌ Неверный JSON → `400`
+- ❌ Нет обязательных полей → `400`
+- ❌ Неверный формат числа → `400`
+- ❌ Нет `SEED` → `500`
+- ❌ Нет `FRAGMENT_COOKIES` → `500`
+- ❌ Ошибки Fragment API → `success: false`
+- ❌ Любые другие ошибки → логируются и возвращаются
+
+---
+
+## 🔐 Безопасность
+
+❗ **Никогда не публикуй:**
+- `SEED`
+- `FRAGMENT_COOKIES`
+
+❗ Рекомендуется:
+- использовать отдельный кошелёк
+- не хранить `.env` в GitHub (`.gitignore`)
+
+---
+
+## 🔄 Отличие методов
+
+| Метод | Требует | Описание |
+|------|--------|---------|
+| `_nokyc` | SEED | Быстро, без авторизации Fragment |
+| обычные | SEED + COOKIES | Полный доступ через аккаунт |
+
+---
+
+## 🧠 Полезно знать
+
+- `SEED` = доступ к TON кошельку  
+- `COOKIES` = доступ к Fragment аккаунту  
+
+👉 Вместе дают полный контроль над средствами
+
+---
+
+## 📌 Примечание
+
+Это неофициальная реализация API Fragment.  
+Используй на свой риск.
